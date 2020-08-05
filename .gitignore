@@ -1,1 +1,5 @@
 *.opendb
+/Debug
+/x64
+/2048/Debug
+/2048/x64
