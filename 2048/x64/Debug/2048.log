@@ -1,0 +1,8 @@
+﻿  main.cpp
+d:\shreya\2048\2048\main.cpp(53): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+d:\shreya\2048\2048\main.cpp(72): warning C4145: '&&': relational expression as switch expression; possible confusion with '&'
+d:\shreya\2048\2048\main.cpp(73): warning C4808: case '72' is not a valid value for switch condition of type 'bool'
+d:\shreya\2048\2048\main.cpp(81): warning C4808: case '75' is not a valid value for switch condition of type 'bool'
+d:\shreya\2048\2048\main.cpp(85): warning C4808: case '77' is not a valid value for switch condition of type 'bool'
+d:\shreya\2048\2048\main.cpp(77): warning C4808: case '80' is not a valid value for switch condition of type 'bool'
+  2048.vcxproj -> D:\Shreya\2048\x64\Debug\2048.exe
