@@ -79,7 +79,7 @@ bool getInput()
 		break;
 
 	case KEY_RIGHT:
-		currAction = Action::Down;
+		currAction = Action::Right;
 		break;
 
 	default:
@@ -94,48 +94,32 @@ bool getInput()
 
 bool updateVector(vector<int>& vTiles)
 {
-	// find first occurrence of non-zero number
-	int i = 0;
-	while (i < vTiles.size() && vTiles[i] == 0)
+	vector<int> temp;
+
+	for (int i = 0; i < vTiles.size(); i++)
 	{
-		i++;
+		if (vTiles[i] != 0)
+		{
+			temp.push_back(vTiles[i]);
+		}
 	}
 
-	// all elements in vector are 0
-	// or all except last element in vector are 0
-	if (i == vTiles.size() || i == vTiles.size() - 1)
+	if (temp.size() > 1 && temp[0] == temp[1])
 	{
-		return true;
+		temp[1] = temp[0] * 2;
+		temp.erase(temp.begin());
 	}
 
-	// record index and val of first occurrence of non-zero number
-	int startIndex = i;
-	int start = vTiles[startIndex];
-
-	// find second occurrrence of non-zero number
-	i = startIndex + 1;
-	while (i < vTiles.size() && vTiles[i] == 0)
+	int diff = vTiles.size() - temp.size();
+	for (int i = 0; i < diff; i++)
 	{
-		i++;
+		vTiles[i] = 0;
 	}
 
-	// all elements in vector are 0
-	if (i == vTiles.size())
+	int j = 0;
+	for (int i = diff; i < vTiles.size(); i++)
 	{
-		vTiles[i-1] = start;
-		vTiles[startIndex] = 0;
-		return true;
-	}
-
-	// record index and val of second occurrence of non-zero number
-	int endIndex = i;
-	int end = vTiles[endIndex];
-
-	// if num are equal, double them
-	if (start == end)
-	{
-		vTiles[endIndex] = start * 2;
-		vTiles[startIndex] = 0;
+		vTiles[i] = temp[j++];
 	}
 
 	return true;
@@ -148,18 +132,12 @@ bool moveUp()
 
 	for (int i = 0; i < COLS; i++)
 	{
-		cout << "\n===================================\n\n";
-
 		vTiles.clear();
 		for (int j = ROWS - 1; j >= 0; j--)
 		{
 			vTiles.push_back(board[i][j].iVal);
 		}
-		
-		for (int j = 0; j < vTiles.size(); j++)
-		{
-			cout << vTiles[j] << ", ";
-		}
+
 		updateVector(vTiles);
 
 		int k = 0;
@@ -168,10 +146,7 @@ bool moveUp()
 			board[i][j].iVal = vTiles[k];
 			k++;
 		}
-
-		printBoard();
 	}
-
 
 	return result;
 }
@@ -179,6 +154,25 @@ bool moveUp()
 bool moveDown()
 {
 	bool result = true;
+	vector<int> vTiles;
+
+	for (int i = 0; i < COLS; i++)
+	{
+		vTiles.clear();
+		for (int j = 0; j < ROWS; j++)
+		{
+			vTiles.push_back(board[i][j].iVal);
+		}
+
+		updateVector(vTiles);
+
+		int k = 0;
+		for (int j = 0; j < ROWS; j++)
+		{
+			board[i][j].iVal = vTiles[k];
+			k++;
+		}
+	}
 
 	return result;
 }
@@ -186,6 +180,25 @@ bool moveDown()
 bool moveLeft()
 {
 	bool result = true;
+	vector<int> vTiles;
+
+	for (int i = 0; i < ROWS; i++)
+	{
+		vTiles.clear();
+		for (int j = COLS - 1; j >= 0; j--)
+		{
+			vTiles.push_back(board[j][i].iVal);
+		}
+
+		updateVector(vTiles);
+
+		int k = 0;
+		for (int j = COLS - 1; j >= 0; j--)
+		{
+			board[j][i].iVal = vTiles[k];
+			k++;
+		}
+	}
 
 	return result;
 }
@@ -193,6 +206,25 @@ bool moveLeft()
 bool moveRight()
 {
 	bool result = true;
+	vector<int> vTiles;
+
+	for (int i = 0; i < ROWS; i++)
+	{
+		vTiles.clear();
+		for (int j = 0; j < COLS; j++)
+		{
+			vTiles.push_back(board[j][i].iVal);
+		}
+
+		updateVector(vTiles);
+
+		int k = 0;
+		for (int j = 0; j < COLS; j++)
+		{
+			board[j][i].iVal = vTiles[k];
+			k++;
+		}
+	}
 
 	return result;
 }
@@ -219,7 +251,7 @@ bool move()
 		break;
 
 	case Right:
-		currAction = Action::Down;
+		currAction = Action::Right;
 		result = moveRight();
 		break;
 
@@ -241,6 +273,8 @@ bool gameRun()
 	}
 
 	move();
+	printBoard();
+
 	return true;
 }
 
