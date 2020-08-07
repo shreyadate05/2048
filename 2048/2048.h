@@ -35,9 +35,10 @@ class Tile
 	int iRow;
 	int iCol;
 	int iVal;
+	int iID;
 	bool bIsAvailable;
 
-	Tile(int iRow = 9999, int iCol = 9999, int iVal = 9999, bool bIsAvailable = false);
+	Tile(int iRow = 9999, int iCol = 9999, int iVal = 9999, int iID = 9999, bool bIsAvailable = true);
 };
 
 Tile board[ROWS][COLS];

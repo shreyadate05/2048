@@ -1,11 +1,12 @@
 #include "2048.h"
 
-Tile::Tile(int iRow, int iCol, int iVal, bool bIsAvailable)
+Tile::Tile(int iRow, int iCol, int iVal, int iID, bool bIsAvailable)
 {
 	iRow = iRow;
 	iCol = iCol;
 	iVal = iVal;
-	bIsAvailable = false;
+	iID  = iID;
+	bIsAvailable = bIsAvailable;
 }
 
 bool printBoard()
@@ -41,17 +42,20 @@ bool initializeBoard()
 			board[i][j].iCol = j;
 			board[i][j].iVal = 0;
 			board[i][j].bIsAvailable = true;
+			board[i][j].iID = i * (ROWS*COLS) + j;
 		}
 	}
 
 	srand(time(NULL));
-	int iRow1 = 0 + rand() % (4);
-	int iCol1 = 0 + rand() % (4);
+	int iRow1 = 0 + rand() % (ROWS);
+	int iCol1 = 0 + rand() % (COLS);
 	board[iRow1][iCol1].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
+	board[iRow1][iCol1].bIsAvailable = false;
 
-	int iRow2 = 0 + rand() % (4);
-	int iCol2 = 0 + rand() % (4);
+	int iRow2 = 0 + rand() % (ROWS);
+	int iCol2 = 0 + rand() % (COLS);
 	board[iRow2][iCol2].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
+	board[iRow1][iCol1].bIsAvailable = false;
 
 	return true;
 }
@@ -87,6 +91,47 @@ bool getInput()
 		currAction = Action::ND;
 		result = false;
 		break;
+	}
+
+	return result;
+}
+
+bool generateRandomNumber()
+{
+	bool result = true;
+
+	srand(time(NULL));
+	int iRow1 = 0;
+	int iCol1 = 0;
+
+	while (true)
+	{
+		if (board[iRow1][iCol1].bIsAvailable)
+		{
+			board[iRow1][iCol1].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
+			board[iRow1][iCol1].bIsAvailable = false;
+			break;
+		}
+		iRow1 = 0 + rand() % (ROWS);
+		iCol1 = 0 + rand() % (COLS);
+	}
+	
+	return result;
+}
+
+bool updateAvailability()
+{
+	bool result = true;
+
+	for (int y = 0; y < COLS; y++)
+	{
+		for (int x = 0; x < ROWS; x++)
+		{
+			if (!board[x][y].iVal)
+				board[x][y].bIsAvailable = true;
+			else
+				board[x][y].bIsAvailable = false;
+		}
 	}
 
 	return result;
@@ -273,6 +318,8 @@ bool gameRun()
 	}
 
 	move();
+	updateAvailability();
+	generateRandomNumber();
 	printBoard();
 
 	return true;
@@ -289,6 +336,3 @@ int main()
 	}
 	return 0;
 }
-
-
-
