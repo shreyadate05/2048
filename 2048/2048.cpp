@@ -149,10 +149,30 @@ bool updateVector(vector<int>& vTiles)
 		}
 	}
 
-	if (temp.size() > 1 && temp[0] == temp[1])
+
+	cout << "\ntemp: ";
+	for (int i = 0; i < temp.size(); i++)
 	{
-		temp[1] = temp[0] * 2;
-		temp.erase(temp.begin());
+		cout << temp[i] << ", ";
+	}
+	cout << "\n";
+
+	int i = 0;
+	while (i < temp.size())
+	{
+		bool bIsValidIndex = temp.size() > 1 && i < temp.size() - 1;
+		if (bIsValidIndex && temp[i] == temp[i + 1])
+		{
+			temp[i+1] = temp[i] * 2;
+			temp.erase(temp.begin() + i);
+		}
+		i++;
+	}
+
+	cout << "\ntemp: ";
+	for (int i = 0; i < temp.size(); i++)
+	{
+		cout << temp[i] << ", ";
 	}
 
 	int diff = vTiles.size() - temp.size();
