@@ -26,6 +26,8 @@ using std::vector;
 class Tile;
 int  score    = 0;
 bool bEndGame = false;
+bool bBoardChanged = false;
+
 enum Action { Up, Down, Left, Right, ND };
 Action currAction = ND;
 
