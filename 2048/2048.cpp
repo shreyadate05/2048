@@ -32,30 +32,67 @@ bool printBoard()
 	return true;
 }
 
+int getRandomWithExclusion()
+{
+	vector<int> excludes;
+	for (int i = 0; i < COLS; i++)
+	{
+		for (int j = 0; j < ROWS; j++)
+		{
+			if (!board[i][j].bIsAvailable)
+			{
+				excludes.push_back(board[i][j].iID);
+			}
+		}
+	}
+
+	unsigned int max = (COLS * ROWS) - excludes.size();
+	int random = (rand() % max);
+	for (unsigned int i = 0; i < excludes.size(); i++)
+	{
+		int ex = excludes[i];
+		if (random < ex) 
+		{
+			break;
+		}
+		random++;
+	}
+
+	return random;
+}
+
+bool generateRandomNumberOnBoard()
+{
+	srand(time(NULL));
+	int randomIndex = getRandomWithExclusion();
+
+	vAvailable[randomIndex] = false;
+	int i = randomIndex / COLS;
+	int j = randomIndex % COLS;
+	
+	board[i][j].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
+	board[i][j].bIsAvailable = false;
+	
+	return true;
+}
+
 bool initializeBoard()
 {
-	for (int i = 0; i < ROWS; i++)
+	for (int i = 0; i < COLS; i++)
 	{
-		for (int j = 0; j < COLS; j++)
+		for (int j = 0; j < ROWS; j++)
 		{
 			board[i][j].iRow = i;
 			board[i][j].iCol = j;
 			board[i][j].iVal = 0;
 			board[i][j].bIsAvailable = true;
-			board[i][j].iID = i * (ROWS*COLS) + j;
+			board[i][j].iID = i*ROWS + j;
+			vAvailable.push_back(true);
 		}
 	}
 
-	srand(time(NULL));
-	int iRow1 = 0 + rand() % (ROWS);
-	int iCol1 = 0 + rand() % (COLS);
-	board[iRow1][iCol1].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
-	board[iRow1][iCol1].bIsAvailable = false;
-
-	int iRow2 = 0 + rand() % (ROWS);
-	int iCol2 = 0 + rand() % (COLS);
-	board[iRow2][iCol2].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
-	board[iRow1][iCol1].bIsAvailable = false;
+	generateRandomNumberOnBoard();
+	generateRandomNumberOnBoard();
 
 	return true;
 }
@@ -96,41 +133,24 @@ bool getInput()
 	return result;
 }
 
-bool generateRandomNumber()
-{
-	bool result = true;
-
-	srand(time(NULL));
-	int iRow1 = 0;
-	int iCol1 = 0;
-
-	while (true)
-	{
-		if (board[iRow1][iCol1].bIsAvailable)
-		{
-			board[iRow1][iCol1].iVal = (rand() > RAND_MAX / 2) ? 2 : 4;
-			board[iRow1][iCol1].bIsAvailable = false;
-			break;
-		}
-		iRow1 = 0 + rand() % (ROWS);
-		iCol1 = 0 + rand() % (COLS);
-	}
-	
-	return result;
-}
-
 bool updateAvailability()
 {
 	bool result = true;
 
-	for (int y = 0; y < COLS; y++)
+	for (int y = 0; y < ROWS; y++)
 	{
-		for (int x = 0; x < ROWS; x++)
+		for (int x = 0; x < COLS; x++)
 		{
-			if (!board[x][y].iVal)
+			if (board[x][y].iVal == 0)
+			{
 				board[x][y].bIsAvailable = true;
+				vAvailable[y*COLS + x]   = true;
+			}
 			else
+			{
 				board[x][y].bIsAvailable = false;
+				vAvailable[y*COLS + x]   = false;
+			}
 		}
 	}
 
@@ -325,8 +345,7 @@ bool gameRun()
 
 	move();
 	updateAvailability();
-	generateRandomNumber();
-	bBoardChanged = false;
+	generateRandomNumberOnBoard();
 	printBoard();
 
 	return true;
