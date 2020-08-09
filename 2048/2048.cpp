@@ -35,14 +35,11 @@ bool printBoard()
 int getRandomWithExclusion()
 {
 	vector<int> excludes;
-	for (int i = 0; i < COLS; i++)
+	for (int i = 0; i < vAvailable.size(); i++)
 	{
-		for (int j = 0; j < ROWS; j++)
+		if (!vAvailable[i])
 		{
-			if (!board[i][j].bIsAvailable)
-			{
-				excludes.push_back(board[i][j].iID);
-			}
+			excludes.push_back(i);
 		}
 	}
 
@@ -137,19 +134,19 @@ bool updateAvailability()
 {
 	bool result = true;
 
-	for (int y = 0; y < ROWS; y++)
+	for (int x = 0; x < COLS; x++)
 	{
-		for (int x = 0; x < COLS; x++)
+		for (int y = 0; y < ROWS; y++)
 		{
 			if (board[x][y].iVal == 0)
 			{
-				board[x][y].bIsAvailable = true;
-				vAvailable[y*COLS + x]   = true;
+				board[x][y].bIsAvailable    = true;
+				vAvailable[board[x][y].iID] = true;
 			}
 			else
 			{
-				board[x][y].bIsAvailable = false;
-				vAvailable[y*COLS + x]   = false;
+				board[x][y].bIsAvailable    = false;
+				vAvailable[board[x][y].iID] = false;
 			}
 		}
 	}
